@@ -1,13 +1,14 @@
 /**
  * Created by PC on 2017/12/3.
  */
+
 $(function(){
     //init
     $('#x').val('10');
     $('#y').val('10');
     $('#n').val('10');
-    $('#mine').val('剩余雷数：10');
-    $('#time').val('已用时间：0');
+    $('#mine').val('10');
+    $('#time').val('0');
 
     $('#start').click(function(){
         var x =  $('#x').val();//行
@@ -26,41 +27,29 @@ var Game = function (x,y,n) {
     this.n = n ? n : 10;
     this.m = new Array();
     this.flag = [];
-    this.right = true;
     this.over = false;
     this.time = 0;
     this.mine = this.n;
     _this = this;
+    this.sign = new Array();
     this.start = function () {
         $('#container').html('');
         this.createMine();
+        window.document.oncontextmenu = function () {
+            return false;
+        }
         $('.box').mousedown(function(e){
-            console.log(e);
            if(!_this.over ){
-               e.preventDefault();
-               e.stopPropagation();
                var px = $(this).attr('x'),
                    py = $(this).attr('y'),
                    pb = $('.box[x=' + px + '][y=' + py + ']');
-               if(e.which == 1 && e.shiftKey == false){
+               if(e.which == 1 && _this.sign[px][py] == 0){
                    _this.check(px,py,$(this));
-               }else if(e.which == 1 && _this.right && e.shiftKey){
-                   pb.text('!');
-                   pb.css({'color' : 'red'});
-                   _this.right = false ;
-                   _this.mine--;
-                   $('#mine').val('剩余雷数：' + _this.mine);
-               }else if(e.which == 1 && !_this.right && e.shiftKey){
-                   pb.text('');
-                   pb.css({'background' : '#eee'});
-                   _this.right = true ;
-                   _this.mine++;
-                   $('#mine').val('剩余雷数：' + _this.mine);
+               }else if(e.which == 3){
+                   _this.mark(px,py,pb);
                }
            }
-
         });
-
     };
     
     this.createMine = function () {
@@ -68,9 +57,11 @@ var Game = function (x,y,n) {
         for(var i = 0;i < this.x;i++){
             this.m[i] = new Array();
             this.flag[i] = new Array();
+            this.sign[i] = new Array();
             for(var j = 0;j < this.y;j++){
                 this.m[i][j] = 0;
                 this.flag[i][j] = 0;
+                this.sign[i][j] = 0;
                 var box = "<div class='box' x='" + i + "' y='" + j + "'></div>";
                 $('#container').append(box);
             }
@@ -129,14 +120,12 @@ var Game = function (x,y,n) {
     
     this.end = function () {
         _this.allOpen();
-        _this.over = true;
         alert('Fail,Please try again!');
         return;
     };
 
     this.allOpen = function(){
         clearInterval(_this.setTime);
-
         for(var i = 0;i<this.x;i++){
             for(var j = 0;j<this.y;j++){
                 if (this.m[i][j] > 0){
@@ -150,8 +139,8 @@ var Game = function (x,y,n) {
                 }
             }
         }
+        _this.over = true;
     };
-
     
     this.expand = function(x,y){
         var xMin = (x-1 >= 0) ? x-1 : x;
@@ -190,9 +179,28 @@ var Game = function (x,y,n) {
         }
     };
 
+    this.mark = function (x,y,b) {
+        if(_this.sign[x][y] == 0){
+            b.text('!');
+            b.css({'color' : 'red'});
+            _this.sign[x][y] = 1 ;
+            if(_this.mine > 0){
+                _this.mine--;
+            }
+        }else if(_this.sign[x][y] == 1){
+            b.text('');
+            b.css({'background' : '#eee'});
+            _this.sign[x][y] = 0 ;
+            if(_this.mine < _this.n){
+                _this.mine++;
+            }
+        }
+        $('#mine').val(_this.mine);
+    }
+
     this.setTime =  setInterval(function(){
             _this.time++;
-            $('#time').val('已用时间：' + _this.time);
+            $('#time').val( _this.time);
     },1000);
 
 };
