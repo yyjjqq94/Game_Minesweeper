@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Game_Minesweeper.iml" filepath="$PROJECT_DIR$/.idea/Game_Minesweeper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Game.iml" filepath="$PROJECT_DIR$/.idea/Game.iml" />
+      <module fileurl="file://D:\project\Game\.idea\Game_Minesweeper.iml" filepath="D:\project\Game\.idea\Game_Minesweeper.iml" />
     </modules>
   </component>
 </project>
