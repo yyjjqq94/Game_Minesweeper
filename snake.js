@@ -171,31 +171,29 @@ var Game = function () {
     this.stepForward = function (i,j) {
         if(i == _this.food.fx && j == _this.food.fy){
             //eat
-            _this.snake.push([i,j]);
+            _this.snake.unshift([i,j]);
             _this.m[i][j] = 1;
-            _this.tail.tx = _this.head.hx;
-            _this.tail.ty = _this.head.hy;
             _this.head.hx = i;
             _this.head.hy = j;
             _this.createFood();
         }else{
             //step
-            _this.snake.push([i,j]);
-            var empty = _this.snake[0];
-            _this.snake.shift();
+            _this.snake.unshift([i,j]);
+            var len = _this.snake.length;
+            var empty = _this.snake[len-1];
+            _this.snake.pop();
             _this.m[empty[0]][empty[1]] = 0;
             _this.head.hx = _this.snake[0][0];
             _this.head.hy = _this.snake[0][1];
             _this.m[_this.head.hx][_this.head.hy] = 1;
-            var len = _this.snake.length;
-            _this.tail.tx = _this.snake[len-1][0];
-            _this.tail.ty = _this.snake[len-1][1];
-            _this.m[_this.tail.tx][_this.tail.ty] = 1;
+            // _this.tail.tx = _this.snake[len-1][0];
+            // _this.tail.ty = _this.snake[len-1][1];
+            // _this.m[_this.tail.tx][_this.tail.ty] = 1;
         }
     }
     
     this.goOn = function (i,j) {
-        if(i >= 0 && i < _this.x && j >= 0 && j < _this.y){
+        if(i >= 0 && i < _this.x && j >= 0 && j < _this.y && this.m[i][j] == 0){
             return true;
         }
         return false;
